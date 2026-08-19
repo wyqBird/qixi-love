@@ -122,11 +122,41 @@
       font-weight: 800;
     }
 
+    .action-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
     .soft-btn {
       padding: 11px 18px;
       color: var(--ink);
       border: 1px solid var(--line);
       background: rgba(255, 255, 255, 0.1);
+    }
+
+    .music-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 172px;
+      justify-content: center;
+    }
+
+    .music-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.55);
+      box-shadow: 0 0 0 rgba(248, 217, 139, 0);
+      transition: background 220ms ease, box-shadow 220ms ease;
+    }
+
+    .music-btn.playing .music-dot {
+      background: var(--gold);
+      box-shadow: 0 0 18px rgba(248, 217, 139, 0.9);
     }
 
     .primary-btn:hover,
@@ -649,6 +679,7 @@
 </head>
 <body>
   <canvas class="stars" aria-hidden="true"></canvas>
+  <audio id="bgm" src="qixi-love-assets/qixi-theme.wav" preload="auto" loop></audio>
 
   <main class="page">
     <section class="gate" id="top">
@@ -656,7 +687,13 @@
         <p class="eyebrow">Qixi 2026 · For Jin Hongying</p>
         <h1>金洪影，七夕快乐</h1>
         <p class="lead">今晚不讲大道理。只把这些年攒下来的心动、牵挂、感谢和一点点欠揍的真话，装进这个小宇宙送给你。</p>
-        <button class="primary-btn" type="button" data-scroll="#name">开启我们的小宇宙</button>
+        <div class="action-row">
+          <button class="primary-btn" type="button" data-scroll="#name">开启我们的小宇宙</button>
+          <button class="soft-btn music-btn" type="button" id="musicBtn" aria-pressed="false">
+            <span class="music-dot" aria-hidden="true"></span>
+            播放一点点氛围
+          </button>
+        </div>
         <div class="scroll-cue">向下滑，也可以一路慢慢看</div>
       </div>
     </section>
@@ -821,6 +858,27 @@
 
   <script>
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const bgm = document.getElementById("bgm");
+    const musicBtn = document.getElementById("musicBtn");
+    bgm.volume = 0.22;
+
+    musicBtn.addEventListener("click", async () => {
+      if (bgm.paused) {
+        try {
+          await bgm.play();
+          musicBtn.classList.add("playing");
+          musicBtn.setAttribute("aria-pressed", "true");
+          musicBtn.lastChild.textContent = " 暂停氛围音乐";
+        } catch (error) {
+          musicBtn.lastChild.textContent = " 轻点再试一次";
+        }
+      } else {
+        bgm.pause();
+        musicBtn.classList.remove("playing");
+        musicBtn.setAttribute("aria-pressed", "false");
+        musicBtn.lastChild.textContent = " 播放一点点氛围";
+      }
+    });
 
     document.querySelectorAll("[data-scroll]").forEach((btn) => {
       btn.addEventListener("click", () => {
