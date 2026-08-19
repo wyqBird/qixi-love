@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>金洪影，七夕快乐</title>
+  <style>
+    :root {
+      --bg: #090b18;
+      --ink: #fff8ef;
+      --muted: #d8c9e5;
+      --gold: #f8d98b;
+      --rose: #ff6f9f;
+      --rose-2: #f23d74;
+      --blue: #8fc7ff;
+      --panel: rgba(255, 250, 244, 0.1);
+      --panel-strong: rgba(255, 255, 255, 0.16);
+      --line: rgba(255, 255, 255, 0.18);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.7;
+      background:
+        radial-gradient(circle at 15% 12%, rgba(255, 111, 159, 0.34), transparent 32rem),
+        radial-gradient(circle at 82% 8%, rgba(143, 199, 255, 0.28), transparent 30rem),
+        linear-gradient(180deg, #070914 0%, #15132a 46%, #22112a 100%);
+      overflow-x: hidden;
+    }
+
+    button {
+      font: inherit;
+      touch-action: manipulation;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.95;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+    }
+
+    .gate {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .gate-inner {
+      width: min(860px, 100%);
+      padding: clamp(28px, 7vw, 72px);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      transform: translateY(12px);
+      animation: rise 900ms ease forwards;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 22px;
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      font-size: clamp(44px, 12vw, 116px);
+      line-height: 0.96;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .lead {
+      max-width: 650px;
+      margin: 0 auto 30px;
+      color: var(--muted);
+      font-size: clamp(17px, 3.8vw, 23px);
+    }
+
+    .primary-btn,
+    .soft-btn {
+      min-height: 48px;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    }
+
+    .primary-btn {
+      padding: 13px 24px;
+      color: #2b0715;
+      background: linear-gradient(135deg, #ffe6a7, #ff86ad 54%, #ff5f91);
+      box-shadow: 0 16px 48px rgba(255, 111, 159, 0.36);
+      font-weight: 800;
+    }
+
+    .soft-btn {
+      padding: 11px 18px;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .primary-btn:hover,
+    .soft-btn:hover,
+    .memory-card:hover,
+    .photo-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .primary-btn:focus-visible,
+    .soft-btn:focus-visible,
+    .memory-card:focus-visible {
+      outline: 3px solid rgba(248, 217, 139, 0.75);
+      outline-offset: 4px;
+    }
+
+    .scroll-cue {
+      margin-top: 22px;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 14px;
+    }
+
+    section {
+      min-height: 100svh;
+      padding: clamp(54px, 9vw, 108px) clamp(18px, 5vw, 72px);
+      display: grid;
+      align-items: center;
+    }
+
+    .wrap {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.9fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      font-size: clamp(34px, 7vw, 72px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: clamp(16px, 2.6vw, 20px);
+    }
+
+    .name-constellation {
+      min-height: 360px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at 30% 28%, rgba(248, 217, 139, 0.2), transparent 20rem),
+        linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .name-constellation::before {
+      content: "金洪影";
+      position: absolute;
+      inset: auto 22px 14px auto;
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      color: rgba(255, 248, 239, 0.16);
+      font-size: clamp(58px, 14vw, 156px);
+      line-height: 1;
+    }
+
+    .constellation-text {
+      position: absolute;
+      inset: 28px 26px auto 26px;
+      max-width: 560px;
+    }
+
+    .constellation-text b {
+      color: var(--gold);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 23px;
+      top: 12px;
+      bottom: 12px;
+      width: 1px;
+      background: linear-gradient(var(--rose), var(--gold), transparent);
+    }
+
+    .memory-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 6px;
+      padding: 18px;
+      cursor: pointer;
+      color: var(--ink);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .memory-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.18), transparent 16rem);
+      opacity: 0;
+      transition: opacity 240ms ease;
+    }
+
+    .memory-card:hover::after,
+    .memory-card.open::after {
+      opacity: 1;
+    }
+
+    .dot {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--gold);
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+
+    .memory-body {
+      position: relative;
+      z-index: 1;
+    }
+
+    .date {
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .memory-body h3 {
+      margin: 2px 0 6px;
+      font-size: clamp(20px, 4vw, 28px);
+      line-height: 1.25;
+    }
+
+    .secret {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 360ms ease;
+    }
+
+    .secret > div {
+      overflow: hidden;
+      color: rgba(255, 248, 239, 0.82);
+    }
+
+    .memory-card.open .secret {
+      grid-template-rows: 1fr;
+    }
+
+    .photos {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .photo-card {
+      min-height: 380px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #120d20;
+      box-shadow: var(--shadow);
+      position: relative;
+      transition: transform 220ms ease;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      display: block;
+      object-fit: cover;
+      filter: saturate(1.03) contrast(0.98);
+    }
+
+    .photo-card.soft-fit img {
+      object-fit: cover;
+      object-position: 44% center;
+    }
+
+    .photo-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 42%, rgba(7, 7, 16, 0.74));
+    }
+
+    .photo-caption {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 15px;
+      z-index: 1;
+    }
+
+    .photo-caption span {
+      display: inline-block;
+      color: #26101b;
+      background: rgba(255, 240, 200, 0.92);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .photo-caption p {
+      margin: 0;
+      font-weight: 700;
+      line-height: 1.45;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65);
+    }
+
+    .praise {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
+      gap: 26px;
+      align-items: center;
+    }
+
+    .praise-box {
+      min-height: 360px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 75% 24%, rgba(255, 111, 159, 0.24), transparent 19rem),
+        rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      padding: clamp(24px, 5vw, 44px);
+      display: grid;
+      align-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .praise-line {
+      min-height: 118px;
+      font-size: clamp(24px, 5vw, 48px);
+      line-height: 1.25;
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      text-wrap: balance;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 12px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+    }
+
+    .final {
+      text-align: center;
+    }
+
+    .bridge {
+      height: 290px;
+      margin: 22px auto 34px;
+      width: min(760px, 100%);
+      border-radius: 36px;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 108%, rgba(248, 217, 139, 0.25), transparent 18rem),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+      box-shadow: var(--shadow);
+    }
+
+    .bridge::before {
+      content: "";
+      position: absolute;
+      left: 11%;
+      right: 11%;
+      bottom: 54px;
+      height: 84px;
+      border-bottom: 4px solid rgba(248, 217, 139, 0.85);
+      border-radius: 50%;
+      filter: drop-shadow(0 0 16px rgba(248, 217, 139, 0.5));
+      transform: scaleX(0.2);
+      opacity: 0.3;
+      transition: transform 1000ms cubic-bezier(.2,.8,.2,1), opacity 1000ms ease;
+    }
+
+    .bridge.on::before {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+
+    .star-person {
+      position: absolute;
+      top: 88px;
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: radial-gradient(circle, #fff 0 10%, var(--gold) 11% 20%, rgba(255, 111, 159, 0.18) 21% 100%);
+      box-shadow: 0 0 34px rgba(248, 217, 139, 0.7);
+      display: grid;
+      place-items: center;
+      color: #31111d;
+      font-weight: 900;
+      transition: left 1100ms cubic-bezier(.2,.8,.2,1), right 1100ms cubic-bezier(.2,.8,.2,1), transform 1100ms ease;
+    }
+
+    .star-left { left: 12%; }
+    .star-right { right: 12%; }
+
+    .bridge.on .star-left {
+      left: calc(50% - 84px);
+      transform: scale(0.92);
+    }
+
+    .bridge.on .star-right {
+      right: calc(50% - 84px);
+      transform: scale(0.92);
+    }
+
+    .heart-core {
+      position: absolute;
+      inset: 98px 0 auto;
+      margin: auto;
+      width: 62px;
+      height: 62px;
+      opacity: 0;
+      transform: scale(0.4) rotate(45deg);
+      background: linear-gradient(135deg, #ff9bbc, #ffe2a7);
+      box-shadow: 0 0 44px rgba(255, 111, 159, 0.8);
+      transition: opacity 700ms ease 600ms, transform 700ms ease 600ms;
+    }
+
+    .heart-core::before,
+    .heart-core::after {
+      content: "";
+      position: absolute;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .heart-core::before { left: -31px; }
+    .heart-core::after { top: -31px; }
+
+    .bridge.on .heart-core {
+      opacity: 1;
+      transform: scale(1) rotate(45deg);
+    }
+
+    .letter {
+      width: min(780px, 100%);
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: clamp(24px, 6vw, 52px);
+      background: linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+      box-shadow: var(--shadow);
+      text-align: left;
+    }
+
+    .letter p {
+      color: rgba(255, 248, 239, 0.86);
+      font-size: clamp(17px, 3.2vw, 22px);
+    }
+
+    .punchline {
+      margin-top: 24px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--gold);
+      font-weight: 900;
+      text-align: center;
+      display: none;
+    }
+
+    .punchline.show {
+      display: block;
+      animation: pop 420ms ease both;
+    }
+
+    .footer {
+      padding: 28px 18px 44px;
+      text-align: center;
+      color: rgba(255, 248, 239, 0.54);
+      position: relative;
+      z-index: 1;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 760ms ease, transform 760ms ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes rise {
+      to { transform: translateY(0); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.88); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 920px) {
+      .section-head,
+      .praise {
+        grid-template-columns: 1fr;
+      }
+
+      .photos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .photo-card,
+      .photo-card img {
+        min-height: 330px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .gate {
+        padding: 16px;
+      }
+
+      .gate-inner {
+        border-radius: 24px;
+      }
+
+      section {
+        padding-inline: 14px;
+      }
+
+      .photos {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-card,
+      .photo-card img {
+        min-height: 430px;
+      }
+
+      .memory-card {
+        grid-template-columns: 58px minmax(0, 1fr);
+        padding: 15px;
+      }
+
+      .dot {
+        width: 42px;
+        height: 42px;
+      }
+
+      .timeline::before {
+        left: 20px;
+      }
+
+      .star-person {
+        width: 64px;
+        height: 64px;
+        top: 96px;
+      }
+
+      .bridge.on .star-left { left: calc(50% - 70px); }
+      .bridge.on .star-right { right: calc(50% - 70px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas class="stars" aria-hidden="true"></canvas>
+
+  <main class="page">
+    <section class="gate" id="top">
+      <div class="gate-inner">
+        <p class="eyebrow">Qixi 2026 · For Jin Hongying</p>
+        <h1>金洪影，七夕快乐</h1>
+        <p class="lead">今晚不讲大道理。只把这些年攒下来的心动、牵挂、感谢和一点点欠揍的真话，装进这个小宇宙送给你。</p>
+        <button class="primary-btn" type="button" data-scroll="#name">开启我们的小宇宙</button>
+        <div class="scroll-cue">向下滑，也可以一路慢慢看</div>
+      </div>
+    </section>
+
+    <section id="name">
+      <div class="wrap reveal">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">A tiny universe</p>
+            <h2>这片星空，今天只写你的名字</h2>
+          </div>
+          <p class="note">如果人生是一条很长的路，那我最幸运的事，就是在 2017-08-27 那天，刚好遇见你。</p>
+        </div>
+        <div class="name-constellation" aria-label="写给金洪影的星空卡片">
+          <div class="constellation-text">
+            <p><b>金洪影</b>，你不是忽然出现的星星。</p>
+            <p>你是后来我回头看，才发现从一开始就把很多普通日子照亮的人。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="timeline">
+      <div class="wrap reveal">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Our orbit</p>
+            <h2>有些日子，会在心里反复发光</h2>
+          </div>
+          <p class="note">点开每一张卡片，里面是我偷偷补上的旁白。很多话当时没说出口，现在补交作业。</p>
+        </div>
+
+        <div class="timeline">
+          <button class="memory-card open" type="button">
+            <span class="dot">01</span>
+            <span class="memory-body">
+              <span class="date">2017-08-27</span>
+              <h3>第一次见面</h3>
+              <span class="secret"><div>我记得那个画面应该有草地、有长裙、有风，也有两个故作自然的人靠在凳子上聊天。那时候的喜欢很青涩，像不好意思靠近的光，却已经开始往心里跑。</div></span>
+            </span>
+          </button>
+
+          <button class="memory-card" type="button">
+            <span class="dot">02</span>
+            <span class="memory-body">
+              <span class="date">2017-10-21</span>
+              <h3>正式在一起</h3>
+              <span class="secret"><div>严格来说，是你勇敢地往前走了一步。后来我才越来越明白，那一步有多珍贵。谢谢你当时没有嫌我慢热，也谢谢你把我从一个人，拉进了两个人的故事里。</div></span>
+            </span>
+          </button>
+
+          <button class="memory-card" type="button">
+            <span class="dot">03</span>
+            <span class="memory-body">
+              <span class="date">2020-12-14</span>
+              <h3>领证，名字写进同一本人生说明书</h3>
+              <span class="secret"><div>那本证不厚，却把很多以后都放进来了。柴米油盐、争吵和拥抱、责任和偏爱，从那天开始都有了一个共同的名字，叫我们家。</div></span>
+            </span>
+          </button>
+
+          <button class="memory-card" type="button">
+            <span class="dot">04</span>
+            <span class="memory-body">
+              <span class="date">2021-08-06</span>
+              <h3>娃降生，我们真的有了一个家</h3>
+              <span class="secret"><div>那几天很漫长，也很难熬。你辛苦、勇敢、脆弱又强大。娃降生的那一刻，我知道你帮我实现了一个很大的愿望，也把我的人生变得更完整。</div></span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="photos">
+      <div class="wrap reveal">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Four fragments</p>
+            <h2>照片会老，但当时的心跳不会</h2>
+          </div>
+          <p class="note">从校园到婚纱，从红本本到一家三口，原来我们真的走了很远，也还会继续走很远。</p>
+        </div>
+
+        <div class="photos">
+          <article class="photo-card">
+            <img src="qixi-love-assets/school.jpg" width="1440" height="1080" loading="lazy" alt="两个人穿着毕业服坐在书架前">
+            <div class="photo-caption">
+              <span>青春</span>
+              <p>那时候我们还像两个学生，笑得很轻，心却很近。</p>
+            </div>
+          </article>
+
+          <article class="photo-card">
+            <img src="qixi-love-assets/certificate.jpg" width="1440" height="1080" loading="lazy" alt="两本结婚证和证件照">
+            <div class="photo-caption">
+              <span>领证</span>
+              <p>从此以后，很多事情不再是我，而是我们。</p>
+            </div>
+          </article>
+
+          <article class="photo-card">
+            <img src="qixi-love-assets/wedding.jpg" width="1620" height="1080" loading="lazy" alt="婚礼照片中两个人在柱廊前亲吻">
+            <div class="photo-caption">
+              <span>婚礼</span>
+              <p>你穿婚纱的样子，我到现在还是觉得很不真实。</p>
+            </div>
+          </article>
+
+          <article class="photo-card soft-fit">
+            <img src="qixi-love-assets/baby.jpg" width="1182" height="1078" loading="lazy" alt="一家三口温柔合照">
+            <div class="photo-caption">
+              <span>家</span>
+              <p>这一张里，有我最想守住的全部。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="praise">
+      <div class="wrap praise reveal">
+        <div>
+          <p class="eyebrow">Love generator</p>
+          <h2>领取今日份喜欢</h2>
+          <p class="note">我认真想了一下，喜欢你这件事，理由太多，系统只能随机展示一部分。</p>
+          <button class="primary-btn" type="button" id="praiseBtn">点一下，换一句</button>
+          <div class="chips" aria-label="关键词">
+            <span class="chip">温柔</span>
+            <span class="chip">勇敢</span>
+            <span class="chip">可爱</span>
+            <span class="chip">会过日子</span>
+            <span class="chip">我的偏心对象</span>
+          </div>
+        </div>
+        <div class="praise-box">
+          <div class="praise-line" id="praiseLine">喜欢你把普通日子过得热气腾腾，也喜欢你在我身边时，家这个字变得特别具体。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="final">
+      <div class="wrap final reveal">
+        <p class="eyebrow">The last star</p>
+        <h2>七夕快乐，老婆</h2>
+        <div class="bridge" id="bridge" aria-label="两颗星慢慢靠近，变成一颗心">
+          <div class="star-person star-left">我</div>
+          <div class="star-person star-right">你</div>
+          <div class="heart-core" aria-hidden="true"></div>
+        </div>
+        <button class="primary-btn" type="button" id="bridgeBtn">让两颗星靠近</button>
+
+        <div class="letter">
+          <p>我没有办法把天上的星星都摘下来，也不一定每件事都做得完美。</p>
+          <p>但我很确定，我想把以后的每一天都认真留给你。愿你一直被爱、被偏心、被好好珍惜，而这件事，我想亲自负责很久很久。</p>
+          <p>谢谢你走进我的生活，和我一起从第一次聊天，走到一家三口。七夕快乐，金洪影。</p>
+          <div class="punchline" id="punchline">最后还有一句特别重要的话：打呼噜请小点声。</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">2026 七夕 · 今日宇宙拥有者：金洪影 · 今日心动次数：无限</footer>
+
+  <script>
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    document.querySelectorAll("[data-scroll]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelector(btn.dataset.scroll).scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    });
+
+    const canvas = document.querySelector(".stars");
+    const ctx = canvas.getContext("2d");
+    let w = 0;
+    let h = 0;
+    let stars = [];
+    const pointer = { x: -9999, y: -9999 };
+
+    function resizeStars() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.min(160, Math.max(70, Math.floor(w * h / 9000)));
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.6 + 0.4,
+        a: Math.random() * 0.7 + 0.2,
+        vx: (Math.random() - 0.5) * 0.16,
+        vy: (Math.random() - 0.5) * 0.12
+      }));
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, w, h);
+      const gradient = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 170);
+      gradient.addColorStop(0, "rgba(255, 216, 139, 0.2)");
+      gradient.addColorStop(1, "rgba(255, 216, 139, 0)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+
+      for (const s of stars) {
+        s.x += s.vx;
+        s.y += s.vy;
+        if (s.x < -10) s.x = w + 10;
+        if (s.x > w + 10) s.x = -10;
+        if (s.y < -10) s.y = h + 10;
+        if (s.y > h + 10) s.y = -10;
+
+        const dx = s.x - pointer.x;
+        const dy = s.y - pointer.y;
+        const glow = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 160);
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 248, 239, ${Math.min(1, s.a + glow * 0.65)})`;
+        ctx.arc(s.x, s.y, s.r + glow * 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (!reduceMotion) requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener("resize", resizeStars);
+    window.addEventListener("pointermove", (event) => {
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+    });
+    resizeStars();
+    drawStars();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    }, { threshold: 0.18 });
+
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+    document.querySelectorAll(".memory-card").forEach((card) => {
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+        card.style.setProperty("--my", `${event.clientY - rect.top}px`);
+      });
+      card.addEventListener("click", () => {
+        card.classList.toggle("open");
+      });
+    });
+
+    const lines = [
+      "喜欢你把普通日子过得热气腾腾，也喜欢你在我身边时，家这个字变得特别具体。",
+      "喜欢你笑起来的时候，像突然把房间的灯都打开了。",
+      "喜欢你勇敢地往前走，也谢谢你当年把慢热的我领进了爱情里。",
+      "喜欢你当妈妈后的温柔和强大。很多时候我看着你，会觉得自己特别幸运。",
+      "喜欢你偶尔的小脾气，也喜欢我们吵完还能回到同一张饭桌上。",
+      "喜欢你在我人生里出现之后，很多明天都变得值得期待。",
+      "喜欢你是我的老婆，也是这个家最柔软、最明亮的中心。"
+    ];
+    let lineIndex = 0;
+    const praiseLine = document.getElementById("praiseLine");
+    document.getElementById("praiseBtn").addEventListener("click", () => {
+      lineIndex = (lineIndex + 1) % lines.length;
+      praiseLine.animate(
+        [{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "translateY(0)" }],
+        { duration: reduceMotion ? 1 : 360, easing: "ease-out" }
+      );
+      praiseLine.textContent = lines[lineIndex];
+    });
+
+    const bridge = document.getElementById("bridge");
+    const bridgeBtn = document.getElementById("bridgeBtn");
+    const punchline = document.getElementById("punchline");
+    bridgeBtn.addEventListener("click", () => {
+      bridge.classList.add("on");
+      bridgeBtn.textContent = "老婆星已点亮";
+      window.setTimeout(() => punchline.classList.add("show"), reduceMotion ? 10 : 1250);
+    });
+  </script>
+</body>
+</html>
